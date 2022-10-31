@@ -47,6 +47,21 @@ Data base related Environment Variable
 MONGO_DB_URL
 ```
 
+## Update the credential in .env file and run below command to run your application in docker container
+
+
+Create .env file in root dir of your project if it is not available
+paste the below content and update the credentials
+```
+API_KEY=asgdakhlsa
+API_SECRET_KEY=dsdfsdf
+BOOTSTRAP_SERVER=sdfasd
+SCHEMA_REGISTRY_API_KEY=sdfsaf
+SCHEMA_REGISTRY_API_SECRET=sdfasdf
+ENDPOINT_SCHEMA_URL=sdafasf
+MONGO_DB_URL=sdfasdfas
+```
+
 Build docker image
 ```
 docker build -t data-pipeline:lts .
