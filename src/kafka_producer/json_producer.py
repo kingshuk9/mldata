@@ -66,13 +66,12 @@ def delivery_report(err, msg):
 
 
 def product_data_using_file(topic,file_path):
+    logging.info(f"Topic: {topic} file_path:{file_path}")
     schema_str = Generic.get_schema_to_produce_consume_data(file_path=file_path)
     schema_registry_conf = schema_config()
     schema_registry_client = SchemaRegistryClient(schema_registry_conf)
-
     string_serializer = StringSerializer('utf_8')
     json_serializer = JSONSerializer(schema_str, schema_registry_client, instance_to_dict)
-
     producer = Producer(sasl_conf())
 
     print("Producing user records to topic {}. ^C to exit.".format(topic))
@@ -82,15 +81,17 @@ def product_data_using_file(topic,file_path):
     try:
         for instance in Generic.get_object(file_path=file_path):
             print(instance)
+            logging.info(f"Topic: {topic} file_path:{instance.to_dict()}")
             producer.produce(topic=topic,
                              key=string_serializer(str(uuid4()), instance.to_dict()),
                              value=json_serializer(instance, SerializationContext(topic, MessageField.VALUE)),
                              on_delivery=delivery_report)
+            print("\nFlushing records...")
+            producer.flush()
     except KeyboardInterrupt:
         pass
     except ValueError:
         print("Invalid input, discarding record...")
         pass
 
-    print("\nFlushing records...")
-    producer.flush()
+    
